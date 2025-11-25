@@ -9,8 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "clients")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -22,8 +21,6 @@ public class Client {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private User user;
 
     @Column(nullable = false, unique = true)
@@ -44,7 +41,5 @@ public class Client {
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     @Builder.Default
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private List<Order> orders = new ArrayList<>();
 }

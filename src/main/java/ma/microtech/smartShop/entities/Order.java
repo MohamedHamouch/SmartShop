@@ -27,8 +27,7 @@ import ma.microtech.smartShop.entities.enums.OrderStatus;
 
 @Entity
 @Table(name = "orders")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -40,8 +39,6 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Client client;
 
     @Column(nullable = false)
@@ -77,19 +74,13 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "promo_code_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private PromoCode promoCode;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @Builder.Default
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private List<OrderItem> items = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @Builder.Default
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private List<Payment> payments = new ArrayList<>();
 }

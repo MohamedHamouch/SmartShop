@@ -24,8 +24,7 @@ import ma.microtech.smartShop.entities.enums.PaymentType;
 
 @Entity
 @Table(name = "payments")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -37,8 +36,6 @@ public class Payment {
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Order order;
 
     @Column(nullable = false)
