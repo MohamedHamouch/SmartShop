@@ -42,6 +42,19 @@ public class ClientController {
         );
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<ClientResponse>> getMyClient(HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        ClientResponse client = clientService.findByUserId(userId);
+        return ResponseEntity.ok(
+                ApiResponse.<ClientResponse>builder()
+                        .status(HttpStatus.OK.value())
+                        .message("Client profile retrieved successfully")
+                        .data(client)
+                        .build()
+        );
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ClientResponse>> getClientById(@PathVariable Long id) {
         ClientResponse client = clientService.findById(id);
