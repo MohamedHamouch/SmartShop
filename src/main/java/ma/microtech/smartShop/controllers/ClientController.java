@@ -66,6 +66,20 @@ public class ClientController {
         );
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ClientResponse>> updateClient(
+            @PathVariable Long id,
+            @Valid @RequestBody ClientRequest request) {
+        ClientResponse client = clientService.update(id, request);
+        return ResponseEntity.ok(
+                ApiResponse.<ClientResponse>builder()
+                        .status(HttpStatus.OK.value())
+                        .message("Client updated successfully")
+                        .data(client)
+                        .build()
+        );
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteClient(@PathVariable Long id) {
         clientService.delete(id);
