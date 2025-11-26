@@ -46,4 +46,16 @@ public class AuthController {
         );
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        UserResponse userResponse = authService.getCurrentUser(userId);
+        return ResponseEntity.ok(
+                ApiResponse.<UserResponse>builder()
+                        .status(HttpStatus.OK.value())
+                        .message("User retrieved successfully")
+                        .data(userResponse)
+                        .build()
+        );
+    }
 }
