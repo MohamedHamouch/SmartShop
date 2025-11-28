@@ -90,6 +90,21 @@ public class PromoCodeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<ApiResponse<PromoCodeResponse>> deactivatePromoCode(@PathVariable Long id) {
+        return promoCodeService.deactivate(id)
+                .map(pc -> {
+                    PromoCodeResponse promoResponse = promoCodeMapper.toResponse(pc);
+                    ApiResponse<PromoCodeResponse> response = ApiResponse.<PromoCodeResponse>builder()
+                            .status(HttpStatus.OK.value())
+                            .message("Promo code deactivated successfully")
+                            .data(promoResponse)
+                            .build();
+                    return ResponseEntity.ok(response);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deletePromoCode(@PathVariable Long id) {
         promoCodeService.delete(id);
