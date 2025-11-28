@@ -62,6 +62,18 @@ public class PaymentController {
         );
     }
 
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<ApiResponse<List<PaymentResponse>>> getPaymentsByOrder(@PathVariable Long orderId) {
+        List<PaymentResponse> payments = paymentService.findByOrderId(orderId);
+        return ResponseEntity.ok(
+                ApiResponse.<List<PaymentResponse>>builder()
+                        .status(HttpStatus.OK.value())
+                        .message("Payments retrieved successfully")
+                        .data(payments)
+                        .build()
+        );
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PaymentResponse>> getPaymentById(@PathVariable Long id) {
         PaymentResponse payment = paymentService.findById(id);

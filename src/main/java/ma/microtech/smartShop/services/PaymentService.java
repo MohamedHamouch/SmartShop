@@ -13,5 +13,7 @@ public interface PaymentService {
 
     PaymentResponse rejectPayment(Long paymentId);
 
+    List<PaymentResponse> findByOrderId(Long orderId);
+
     PaymentResponse findById(Long paymentId);
 }

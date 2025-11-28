@@ -126,6 +126,14 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public List<PaymentResponse> findByOrderId(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+
+        return paymentMapper.toResponseList(paymentRepository.findByOrderId(orderId));
+    }
+
+    @Override
     public PaymentResponse findById(Long paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment not found with id: " + paymentId));
