@@ -5,8 +5,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "promo_codes")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
