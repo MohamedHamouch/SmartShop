@@ -25,43 +25,48 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String path = request.getRequestURI();
-        String method = request.getMethod();
+        try {
+            String path = request.getRequestURI();
+            String method = request.getMethod();
 
-        // Public
-        if (path.equals("/api/auth/login") || path.equals("/api/auth/logout")) {
+            // Public
+            if (path.equals("/api/auth/login") || path.equals("/api/auth/logout")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("userId") == null) {
+                throw new UnauthorizedException("Please login");
+            }
+
+            String role = (String) session.getAttribute("role");
+
+
+            if ("CLIENT".equals(role)) {
+                if (path.equals("/api/products") && method.equals("GET")) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                if (path.equals("/api/auth/me") && method.equals("GET")) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                if (path.equals("/api/clients/me") && method.equals("GET")) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                if (path.equals("/api/orders/me") && method.equals("GET")) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                throw new ForbiddenException("Access denied: Clients can only view products and their own data");
+            }
+
+
             filterChain.doFilter(request, response);
-            return;
+        } catch (Exception ex) {
+            handlerExceptionResolver.resolveException(request, response, null, ex);
         }
-
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("userId") == null) {
-            throw new UnauthorizedException("Please login");
-        }
-
-        String role = (String) session.getAttribute("role");
-
-        if ("CLIENT".equals(role)) {
-            if (path.equals("/api/products") && method.equals("GET")) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-            if (path.equals("/api/auth/me") && method.equals("GET")) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-            if (path.equals("/api/clients/me") && method.equals("GET")) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-            if (path.equals("/api/orders/me") && method.equals("GET")) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-            throw new ForbiddenException("Access denied: Clients can only view products and their own data");
-        }
-
-        filterChain.doFilter(request, response);
-
     }
 }
