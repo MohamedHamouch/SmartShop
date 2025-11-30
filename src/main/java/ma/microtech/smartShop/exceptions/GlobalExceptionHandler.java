@@ -57,17 +57,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConflict(DataIntegrityViolationException ex, ServletWebRequest request) {
-        ErrorResponse body = ErrorResponse.builder()
-                .status(HttpStatus.CONFLICT.value())
-                .error("Conflict")
-                .message("Data constraint violation: " + ex.getMostSpecificCause().getMessage())
-                .path(request.getRequest().getRequestURI())
-                .build();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex, ServletWebRequest request) {
         String message = ex.getBindingResult().getFieldErrors().stream()
@@ -81,6 +70,17 @@ public class GlobalExceptionHandler {
                 .path(request.getRequest().getRequestURI())
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(DataIntegrityViolationException ex, ServletWebRequest request) {
+        ErrorResponse body = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .error("Conflict")
+                .message("Data constraint violation: " + ex.getMostSpecificCause().getMessage())
+                .path(request.getRequest().getRequestURI())
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
     @ExceptionHandler(Exception.class)
