@@ -30,7 +30,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             String method = request.getMethod();
 
             // Public
-            if (path.equals("/api/auth/login") || path.equals("/api/auth/logout")) {
+            if (path.equals("/api/auth/login") || path.equals("/api/auth/logout")
+                    || path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs")) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -41,7 +42,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             }
 
             String role = (String) session.getAttribute("role");
-
 
             if ("CLIENT".equals(role)) {
                 if (path.equals("/api/products") && method.equals("GET")) {
@@ -62,7 +62,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 }
                 throw new ForbiddenException("Access denied: Clients can only view products and their own data");
             }
-
 
             filterChain.doFilter(request, response);
         } catch (Exception ex) {
