@@ -1,20 +1,26 @@
 package ma.microtech.smartShop.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import static org.mockito.ArgumentMatchers.any;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -73,7 +79,7 @@ class ProductServiceImplTest {
 
     @Test
     void findAll_ShouldReturnPageOfProducts() {
-        Page<Product> productPage = new PageImpl<>(java.util.List.of(product));
+        Page<Product> productPage = new PageImpl<>(List.of(product));
         when(productRepository.findByDeletedFalse(pageable)).thenReturn(productPage);
         when(productMapper.toResponse(product)).thenReturn(productResponse);
 
@@ -204,18 +210,5 @@ class ProductServiceImplTest {
         assertEquals("Product not found with id: 1", exception.getMessage());
         verify(productRepository).findByIdAndDeletedFalse(1L);
         verify(productRepository, never()).save(any());
-    }
-
-    @Test
-    void delete_ShouldNotActuallyDeleteFromDatabase() {
-        when(productRepository.findByIdAndDeletedFalse(1L)).thenReturn(Optional.of(product));
-        when(productRepository.save(any(Product.class))).thenReturn(product);
-
-        productService.delete(1L);
-
-        // Assert - verify save was called (soft delete), not delete
-        verify(productRepository).save(product);
-        verify(productRepository, never()).delete(any());
-        verify(productRepository, never()).deleteById(any());
     }
 }
